@@ -10,7 +10,7 @@ const Signup = () => {
 
   const handleSubmit = async e => {
     e.preventDefault();
-    const res = await fetch('http://localhost:3000/api/signup', {
+    const res = await fetch('https://podcast-0wqi.onrender.com/api/signup', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(form)

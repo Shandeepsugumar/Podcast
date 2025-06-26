@@ -8,8 +8,8 @@ import { useNavigate } from 'react-router-dom';
 import { useUser } from '../UserContext';
 
 const BACKEND_API_URL = "http://127.0.0.1:8888/api/search";
-const API_LIKED_URL = "http://localhost:3000/api/liked";
-const API_LIKE_URL = "http://localhost:3000/api/like";
+const API_LIKED_URL = "https://podcast-0wqi.onrender.com/api/liked";
+const API_LIKE_URL = "https://podcast-0wqi.onrender.com/api/like";
 const FAVORITES_KEY = "podcast_favorites";
 
 const getFavoritesFromStorage = () => {
@@ -73,6 +73,12 @@ const Home = () => {
     }, []);
 
     useEffect(() => {
+      if (user && user.email) {
+        fetchLikedPodcasts();
+      }
+    }, [user]);
+
+    useEffect(() => {
       saveFavoritesToStorage(favorites);
     }, [favorites]);
 
@@ -85,14 +91,14 @@ const Home = () => {
       }
       if (isFavorited(podcast)) {
         // Unlike
-        await fetch('http://localhost:3000/api/unlike', {
+        await fetch('https://podcast-0wqi.onrender.com/api/unlike', {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email: user.email, podcastId: podcast.id })
         });
       } else {
         // Like
-        await fetch('http://localhost:3000/api/like', {
+        await fetch('https://podcast-0wqi.onrender.com/api/like', {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email: user.email, podcast })

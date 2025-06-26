@@ -19,7 +19,7 @@ function generateRandomString(length) {
 const app = express();
 app.use(cors());
 
-let spotifyAccessToken = "BQAjFZYiCXnDjuaPE_DGFSXUpHrzMvpnXVAqcO-Rb9XgLpZpv29ljaBkTH0h0IzJlsZDlklnc3gnN9JiFbM3bdYV_dKJz07jlbh7iqYoDJ8IR1SBYhl7oYZ1es07bd8REiHK-c50wNP9ZYy1D_U0nIXYVgewmPHArF--jLO1jC3y2FTzYANdjQlo-53qsZaWtq7AwL8lC9tPdIoSzfx6nSUKKuO1IoS18CrGxSWtqT5iUAQ4dKd5aKF_p1iGFw";
+let spotifyAccessToken = "BQDz6MM2f4bDDDzgHBgKE2TkJhvyDcr7WTlZQzQtGZhGPlNBo8kjbZ5co0UJBxsEF9FYIxg194VgqOBNj4astbtqp6Qyw8_UKSYVAjFXmBU1cWNLBWig5tMfUC2EdWm9RwaidzepE5bhFDEZb5PF9ZTWaOoC0eCuRFq2VnNHG5o6GeJDdPrQW0brDMj8AbtmXHhVXs4CY0XfD2UUMuaFgEbt1wBqILo7iLeablmzXeLwl-829oKUFW6Ya32KnQ";
 
 app.get('/login', function(req, res) {
   const state = generateRandomString(16);

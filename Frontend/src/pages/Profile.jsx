@@ -9,7 +9,7 @@ const Profile = () => {
 
   useEffect(() => {
     if (!user) return;
-    fetch(`http://localhost:3000/api/profile?email=${encodeURIComponent(user.email)}`)
+    fetch(`https://podcast-0wqi.onrender.com/api/profile?email=${encodeURIComponent(user.email)}`)
       .then(res => res.json())
       .then(data => {
         setProfile(data);
