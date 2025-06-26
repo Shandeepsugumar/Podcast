@@ -1,0 +1,121 @@
+.explore-container {
+  max-width: 1000px;
+  margin: 40px auto;
+  padding: 2rem;
+}
+
+.explore-title {
+  color: #fff;
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+.explore-loading,
+.explore-error {
+  color: #fff;
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.explore-error {
+  color: #ff4d4f;
+}
+
+.podcast-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 32px;
+  justify-content: center;
+}
+
+.podcast-card {
+  background: rgba(255,255,255,0.12);
+  border-radius: 16px;
+  padding: 20px;
+  width: 220px;
+  color: #fff;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.10);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.podcast-card:hover {
+  transform: translateY(-6px) scale(1.03);
+  box-shadow: 0 6px 24px rgba(0,0,0,0.18);
+}
+
+.podcast-image {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 12px;
+  margin-bottom: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+}
+
+.podcast-title {
+  margin: 8px 0 4px 0;
+  font-size: 18px;
+  text-align: center;
+  font-weight: 600;
+}
+
+.podcast-publisher {
+  font-size: 14px;
+  color: #eee;
+  margin-bottom: 8px;
+  text-align: center;
+}
+
+.podcast-play-btn {
+  background: #511091;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 16px;
+  cursor: pointer;
+  margin-top: 8px;
+  font-size: 1rem;
+  font-weight: 500;
+  transition: background 0.2s;
+}
+
+.podcast-play-btn:disabled {
+  background: #888;
+  cursor: not-allowed;
+}
+
+.podcast-play-btn:hover:not(:disabled) {
+  background: #764ba2;
+}
+
+.explore-search-bar-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 32px;
+}
+
+.explore-search-bar {
+  width: 350px;
+  padding: 12px 18px;
+  border-radius: 24px;
+  border: none;
+  font-size: 1rem;
+  background: rgba(255,255,255,0.18);
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  outline: none;
+  transition: background 0.2s, box-shadow 0.2s;
+}
+
+.explore-search-bar::placeholder {
+  color: #eee;
+  opacity: 1;
+}
+
+.explore-search-bar:focus {
+  background: rgba(255,255,255,0.28);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+} 
