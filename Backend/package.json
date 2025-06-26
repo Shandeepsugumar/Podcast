@@ -4,7 +4,7 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node --watch server.js"
+    "start": "concurrently \"node --watch server.js\" \"node --watch index.js\""
   },
   "keywords": [],
   "author": "",
@@ -18,5 +18,8 @@
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.16.0"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.0"
   }
 }

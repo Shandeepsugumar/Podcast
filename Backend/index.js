@@ -1,7 +1,7 @@
-const express = require('express');
-const request = require('request');
-const querystring = require('querystring');
-const cors = require('cors');
+import express from 'express';
+import request from 'request';
+import querystring from 'querystring';
+import cors from 'cors';
 
 const client_id = '6c9927a8d48e46939be2500427c89b0a';
 const client_secret = '67f67b2a43494665be2055a98e76f7b4';
