@@ -5,7 +5,7 @@ import cors from 'cors';
 
 const client_id = '6c9927a8d48e46939be2500427c89b0a';
 const client_secret = '67f67b2a43494665be2055a98e76f7b4';
-const redirect_uri = 'http://127.0.0.1:8888/callback';
+const redirect_uri = 'https://podcast-0wqi.onrender.com/callback';
 
 function generateRandomString(length) {
   let text = '';
@@ -108,5 +108,5 @@ app.get('/api/show', function(req, res) {
 });
 
 app.listen(8888, () => {
-  console.log('Server running on http://127.0.0.1:8888');
+  console.log('Server running on https://podcast-0wqi.onrender.com');
 }); 

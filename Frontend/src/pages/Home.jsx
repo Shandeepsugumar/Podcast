@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import { useUser } from '../UserContext';
 
-const BACKEND_API_URL = "http://127.0.0.1:8888/api/search";
+const BACKEND_API_URL = "https://podcast-0wqi.onrender.com/api/search";
 const API_LIKED_URL = "https://podcast-0wqi.onrender.com/api/liked";
 const API_LIKE_URL = "https://podcast-0wqi.onrender.com/api/like";
 const FAVORITES_KEY = "podcast_favorites";
