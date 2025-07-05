@@ -96,7 +96,7 @@ const Navbar = () => {
             </div>
             
             <div className="navbar-center">
-                <form className="search-container" onSubmit={handleSearch} style={{ position: 'relative' }}>
+                {/* <form className="search-container" onSubmit={handleSearch} style={{ position: 'relative' }}>
                     <input
                         type="text"
                         placeholder="Search podcasts, episodes, or creators..."
@@ -150,7 +150,7 @@ const Navbar = () => {
                             )}
                         </div>
                     )}
-                </form>
+                </form> */}
             </div>
             
             <div className="navbar-right">

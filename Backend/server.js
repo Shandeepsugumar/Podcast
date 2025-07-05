@@ -5,6 +5,9 @@ import cors from 'cors';
 import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import request from 'request';
+import Parser from 'rss-parser';
+import multer from 'multer';
 
 const mongoUri = process.env.MONGODB_URI;
 const JWT_SECRET = process.env.JWT_SECRET;
@@ -13,17 +16,22 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// Multer configuration for profile image uploads
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
+
 // Mongoose User Schema & Model
 const userSchema = new mongoose.Schema({
   name: String,
   email: { type: String, unique: true },
   password: String,
-  likedPodcasts: { type: Array, default: [] }
+  likedPodcasts: { type: Array, default: [] },
+  profileImage: Buffer // Add profile image as binary
 });
 const User = mongoose.model('Profile', userSchema);
 
 // Connect to MongoDB Atlas with Mongoose
-mongoose.connect(mongoUri, { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect(mongoUri)
   .then(() => console.log('Connected to MongoDB Atlas (Mongoose)'))
   .catch(err => console.error(err));
 
@@ -101,6 +109,111 @@ app.put('/api/unlike', async (req, res) => {
     { $pull: { likedPodcasts: { id: podcastId } } }
   );
   res.json({ success: true });
+});
+
+// Clear all liked podcasts for the logged-in user
+app.post('/api/clear-likes', auth, async (req, res) => {
+  await User.updateOne(
+    { email: req.user.email },
+    { $set: { likedPodcasts: [] } }
+  );
+  res.json({ success: true });
+});
+
+// Upload or update profile image
+app.post('/api/profile/image', auth, upload.single('image'), async (req, res) => {
+  if (!req.file) return res.status(400).json({ error: 'No file uploaded' });
+  await User.updateOne(
+    { email: req.user.email },
+    { $set: { profileImage: req.file.buffer } }
+  );
+  res.json({ success: true });
+});
+// Serve profile image
+app.get('/api/profile/image', auth, async (req, res) => {
+  const user = await User.findOne({ email: req.user.email });
+  if (!user || !user.profileImage) return res.status(404).end();
+  res.set('Content-Type', 'image/png');
+  res.send(user.profileImage);
+});
+
+// Helper to map iTunes podcast to frontend's expected structure
+function mapItunesPodcastToFrontend(podcast) {
+  return {
+    id: podcast.collectionId,
+    name: podcast.collectionName,
+    images: [{ url: podcast.artworkUrl600 || podcast.artworkUrl100 }],
+    publisher: podcast.artistName,
+    description: podcast.collectionName + ' by ' + podcast.artistName, // iTunes search doesn't return description
+    external_urls: { apple: podcast.collectionViewUrl },
+    total_episodes: podcast.trackCount,
+    feedUrl: podcast.feedUrl,
+    // Add more fields as needed
+  };
+}
+
+// Search podcasts using iTunes Search API
+app.get('/api/search', function(req, res) {
+  const query = req.query.query;
+  if (!query) {
+    return res.status(400).json({ error: 'Missing query parameter.' });
+  }
+  const searchUrl = `https://itunes.apple.com/search?media=podcast&term=${encodeURIComponent(query)}&limit=10`;
+  request.get({
+    url: searchUrl,
+    json: true
+  }, (error, response, body) => {
+    if (!error && response.statusCode === 200) {
+      // iTunes returns results in body.results
+      const mapped = (body.results || []).map(mapItunesPodcastToFrontend);
+      res.json(mapped);
+    } else {
+      res.status(response ? response.statusCode : 500).json({ error: 'Failed to fetch podcasts', details: body });
+    }
+  });
+});
+
+// Fetch podcast details by collectionId (show id)
+app.get('/api/show', function(req, res) {
+  const showId = req.query.id;
+  if (!showId) {
+    return res.status(400).json({ error: 'Missing show id.' });
+  }
+  // Lookup podcast details by collectionId
+  const lookupUrl = `https://itunes.apple.com/lookup?id=${encodeURIComponent(showId)}`;
+  request.get({
+    url: lookupUrl,
+    json: true
+  }, (error, response, body) => {
+    if (!error && response.statusCode === 200) {
+      const mapped = (body.results && body.results.length > 0) ? mapItunesPodcastToFrontend(body.results[0]) : {};
+      res.json(mapped);
+    } else {
+      res.status(response ? response.statusCode : 500).json({ error: 'Failed to fetch show', details: body });
+    }
+  });
+});
+
+// New endpoint: Fetch episodes from RSS feed
+app.get('/api/episodes', async function(req, res) {
+  const feedUrl = req.query.feedUrl;
+  if (!feedUrl) {
+    return res.status(400).json({ error: 'Missing feedUrl parameter.' });
+  }
+  try {
+    const parser = new Parser();
+    const feed = await parser.parseURL(feedUrl);
+    const episodes = (feed.items || []).map(item => ({
+      title: item.title,
+      audioUrl: item.enclosure?.url || '',
+      description: item.contentSnippet || item.summary || '',
+      pubDate: item.pubDate || '',
+      link: item.link || '',
+    })).filter(ep => ep.audioUrl);
+    res.json(episodes);
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to fetch or parse RSS feed', details: err.message });
+  }
 });
 
 const PORT = process.env.PORT || 3000;

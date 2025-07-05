@@ -10,7 +10,7 @@ const Signup = () => {
 
   const handleSubmit = async e => {
     e.preventDefault();
-    const res = await fetch('https://podcast-0wqi.onrender.com/api/signup', {
+    const res = await fetch('http://localhost:3000/api/signup', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(form)
@@ -18,7 +18,7 @@ const Signup = () => {
     const data = await res.json();
     setMsg(data.success ? 'Signup successful! Please login.' : data.error);
     if (data.success) {
-      localStorage.setItem('podcast_user', JSON.stringify({ email: form.email }));
+      localStorage.setItem('podcast_user', JSON.stringify({ name: form.name, email: form.email }));
       navigate('/');
     }
   };

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { usePlayer } from '../components/PlayerContext';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useUser } from '../UserContext';
 
 const FAVORITES_KEY = "podcast_favorites";
@@ -20,14 +20,15 @@ const Favorites = () => {
     const [search, setSearch] = useState('');
     const { playTrack } = usePlayer();
     const navigate = useNavigate();
+    const location = useLocation();
 
     useEffect(() => {
       console.log('Current user:', user);
       if (!user || !user.email) return;
-      fetch(`https://podcast-0wqi.onrender.com/api/liked?email=${encodeURIComponent(user.email)}`)
+      fetch(`http://localhost:3000/api/liked?email=${encodeURIComponent(user.email)}`)
         .then(res => res.json())
         .then(data => setFavorites(Array.isArray(data) ? data : []));
-    }, [user]);
+    }, [user, location]);
 
     const filteredFavorites = Array.isArray(favorites) ? favorites.filter(fav =>
       (fav.title && fav.title.toLowerCase().includes(search.toLowerCase())) ||
@@ -39,6 +40,10 @@ const Favorites = () => {
     const episodes = filteredFavorites.filter(fav => fav.favoriteType === 'episode');
 
     const handleCardClick = (podcast) => {
+      if (!user) {
+        navigate('/login');
+        return;
+      }
       navigate('/player', { state: { podcast } });
     };
 
@@ -63,9 +68,9 @@ const Favorites = () => {
               <div className="cards">
                 {podcasts.map(podcast => (
                   <div key={podcast.id} className="card podcast-card" style={{ cursor: 'pointer' }} onClick={() => handleCardClick(podcast)}>
-                    <img src={podcast.image} alt={podcast.title} style={{ width: "100%", borderRadius: 8 }} />
+                    <img src={podcast.images && podcast.images[0]?.url} alt={podcast.name || podcast.title} style={{ width: "100%", borderRadius: 8 }} />
                     <div className="card-content">
-                      <h3 className="card-title">{podcast.title}</h3>
+                      <h3 className="card-title">{podcast.name || podcast.title}</h3>
                       <p className="card-host">{podcast.publisher}</p>
                       <div className="card-meta">
                         <span className="listeners">{podcast.total_episodes} episodes</span>

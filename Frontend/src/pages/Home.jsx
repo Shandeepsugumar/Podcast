@@ -7,9 +7,9 @@ import { useEffect, useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import { useUser } from '../UserContext';
 
-const BACKEND_API_URL = "https://podcast-0wqi.onrender.com/api/search";
-const API_LIKED_URL = "https://podcast-0wqi.onrender.com/api/liked";
-const API_LIKE_URL = "https://podcast-0wqi.onrender.com/api/like";
+const BACKEND_API_URL = "http://localhost:3000/api/search";
+const API_LIKED_URL = "http://localhost:3000/api/liked";
+const API_LIKE_URL = "http://localhost:3000/api/like";
 const FAVORITES_KEY = "podcast_favorites";
 
 const getFavoritesFromStorage = () => {
@@ -36,9 +36,9 @@ const Home = () => {
     // Fetch liked podcasts from backend after login
     const fetchLikedPodcasts = async () => {
       const token = localStorage.getItem('token');
-      if (!token) return;
+      if (!token || !user || !user.email) return;
       try {
-        const res = await fetch(API_LIKED_URL, {
+        const res = await fetch(`${API_LIKED_URL}?email=${encodeURIComponent(user.email)}`, {
           headers: { 'Authorization': `Bearer ${token}` }
         });
         if (res.ok) {
@@ -54,14 +54,14 @@ const Home = () => {
     useEffect(() => {
         setLoading(true);
         setError(null);
-        // Fetch featured and trending podcasts from backend (Spotify)
+        // Fetch featured and trending podcasts from backend (iTunes)
         Promise.all([
-          fetch(`${BACKEND_API_URL}?query=featured`).then(res => res.json()),
-          fetch(`${BACKEND_API_URL}?query=technology`).then(res => res.json())
+          fetch(`${BACKEND_API_URL}?query=news`).then(res => res.ok ? res.json() : []),
+          fetch(`${BACKEND_API_URL}?query=comedy`).then(res => res.ok ? res.json() : [])
         ])
         .then(([featured, trending]) => {
-          setFeaturedPodcasts(featured || []);
-          setTrendingShows(trending || []);
+          setFeaturedPodcasts(Array.isArray(featured) ? featured : []);
+          setTrendingShows(Array.isArray(trending) ? trending : []);
           setLoading(false);
         })
         .catch(() => {
@@ -89,25 +89,33 @@ const Home = () => {
         navigate('/login');
         return;
       }
+      const token = localStorage.getItem('token');
       if (isFavorited(podcast)) {
         // Unlike
-        await fetch('https://podcast-0wqi.onrender.com/api/unlike', {
+        await fetch('http://localhost:3000/api/unlike', {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email: user.email, podcastId: podcast.id })
         });
       } else {
         // Like
-        await fetch('https://podcast-0wqi.onrender.com/api/like', {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email: user.email, podcast })
+        await fetch('http://localhost:3000/api/like', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({ podcast: { ...podcast, favoriteType: 'podcast' } })
         });
       }
       fetchLikedPodcasts();
     };
 
     const handleCardClick = (podcast) => {
+      if (!user) {
+        navigate('/login');
+        return;
+      }
       navigate('/player', { state: { podcast } });
     };
 
@@ -137,6 +145,9 @@ const Home = () => {
                                     <div className="card-content">
                                         <h3 className="card-title">{podcast.name}</h3>
                                         <p className="card-host">{podcast.publisher}</p>
+                                        <div className="card-meta">
+                                            <span className="listeners">{podcast.total_episodes} episodes</span>
+                                        </div>
                                     </div>
                                     <button
                                       className="like-btn"
@@ -162,6 +173,9 @@ const Home = () => {
                                     <div className="card-content">
                                         <h3 className="card-title">{show.name}</h3>
                                         <p className="card-category">{show.publisher}</p>
+                                        <div className="card-meta">
+                                            <span className="listeners">{show.total_episodes} episodes</span>
+                                        </div>
                                     </div>
                                     <button
                                       className="like-btn"
