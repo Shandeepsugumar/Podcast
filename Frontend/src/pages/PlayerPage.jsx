@@ -22,7 +22,7 @@ const PlayerPage = () => {
     if (podcast?.feedUrl) {
       setLoading(true);
       setError(null);
-      fetch(`http://localhost:3000/api/episodes?feedUrl=${encodeURIComponent(podcast.feedUrl)}`)
+      fetch(`https://podcast-0wqi.onrender.com/api/episodes?feedUrl=${encodeURIComponent(podcast.feedUrl)}`)
         .then(res => res.ok ? res.json() : Promise.reject('Failed to fetch episodes'))
         .then(data => {
           setEpisodes(data);

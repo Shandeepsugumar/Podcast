@@ -4,8 +4,8 @@ import './Explore.css';
 import { useUser } from '../UserContext';
 import Sidebar from '../components/sidebar';
 
-const BACKEND_API_URL = 'http://localhost:3000/api/search';
-const API_LIKED_URL = 'http://localhost:3000/api/liked';
+const BACKEND_API_URL = 'https://podcast-0wqi.onrender.com/api/search';
+const API_LIKED_URL = 'https://podcast-0wqi.onrender.com/api/liked';
 
 const Explore = () => {
   const [podcasts, setPodcasts] = useState([]);
@@ -61,14 +61,14 @@ const Explore = () => {
     const token = localStorage.getItem('token');
     if (isFavorited(podcast)) {
       // Unlike
-      await fetch('http://localhost:3000/api/unlike', {
+      await fetch('https://podcast-0wqi.onrender.com/api/unlike', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: user.email, podcastId: podcast.id })
       });
     } else {
       // Like
-      await fetch('http://localhost:3000/api/like', {
+      await fetch('https://podcast-0wqi.onrender.com/api/like', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

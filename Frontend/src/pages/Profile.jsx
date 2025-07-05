@@ -15,7 +15,7 @@ const Profile = () => {
 
   useEffect(() => {
     if (!user) return;
-    fetch(`http://localhost:3000/api/profile?email=${encodeURIComponent(user.email)}`)
+    fetch(`https://podcast-0wqi.onrender.com/api/profile?email=${encodeURIComponent(user.email)}`)
       .then(res => res.json())
       .then(data => {
         setProfile(data);
@@ -29,7 +29,7 @@ const Profile = () => {
     const fetchProfileImg = async () => {
       const token = localStorage.getItem('token');
       if (!token) return;
-      const res = await fetch('http://localhost:3000/api/profile/image', {
+      const res = await fetch('https://podcast-0wqi.onrender.com/api/profile/image', {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       if (res.ok) {
@@ -48,14 +48,14 @@ const Profile = () => {
     const formData = new FormData();
     formData.append('image', file);
     const token = localStorage.getItem('token');
-    const res = await fetch('http://localhost:3000/api/profile/image', {
+    const res = await fetch('https://podcast-0wqi.onrender.com/api/profile/image', {
       method: 'POST',
       headers: { 'Authorization': `Bearer ${token}` },
       body: formData
     });
     if (res.ok) {
       // Refresh the profile image
-      const imgRes = await fetch('http://localhost:3000/api/profile/image', {
+      const imgRes = await fetch('https://podcast-0wqi.onrender.com/api/profile/image', {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       if (imgRes.ok) {

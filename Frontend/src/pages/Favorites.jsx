@@ -25,7 +25,7 @@ const Favorites = () => {
     useEffect(() => {
       console.log('Current user:', user);
       if (!user || !user.email) return;
-      fetch(`http://localhost:3000/api/liked?email=${encodeURIComponent(user.email)}`)
+      fetch(`https://podcast-0wqi.onrender.com/api/liked?email=${encodeURIComponent(user.email)}`)
         .then(res => res.json())
         .then(data => setFavorites(Array.isArray(data) ? data : []));
     }, [user, location]);
