@@ -190,11 +190,45 @@
 
 @media (max-width: 768px) {
   .sidebar {
-    width: 280px;
+    width: 80vw;
+    max-width: 320px;
+    left: -80vw;
+    top: 0;
+    height: 100vh;
+    border-radius: 0 10px 10px 0;
+    box-shadow: 2px 0 16px rgba(0,0,0,0.2);
   }
-  
+  .sidebar.open {
+    left: 0;
+  }
   .sidebar-toggle {
-    top: 85px;
+    top: 20px;
     left: 15px;
+    width: 48px;
+    height: 48px;
+    font-size: 1.5rem;
+    z-index: 1100;
+  }
+  .sidebar-header {
+    padding-top: 2.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .sidebar {
+    width: 100vw;
+    max-width: 100vw;
+    left: -100vw;
+    border-radius: 0;
+  }
+  .sidebar.open {
+    left: 0;
+  }
+  .sidebar-toggle {
+    top: 15px;
+    left: 10px;
+    width: 44px;
+    height: 44px;
+    font-size: 1.7rem;
   }
 }
