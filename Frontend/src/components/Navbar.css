@@ -128,4 +128,25 @@
   height: 40px;
   cursor: pointer;
   padding: 10px;
+}
+
+@media (max-width: 768px) {
+  .navbar {
+    padding: 0 1rem;
+  }
+  .nav-links {
+    display: none;
+  }
+  .navbar-right {
+    gap: 0.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .logo {
+    font-size: 1.2rem;
+  }
+  .logo-icon {
+    font-size: 1.5rem;
+  }
 } 

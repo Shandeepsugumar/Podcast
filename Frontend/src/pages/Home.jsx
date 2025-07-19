@@ -47,7 +47,7 @@ const Home = () => {
           saveFavoritesToStorage(liked);
         }
       } catch (err) {
-        // Optionally handle error
+        console.error('Error fetching liked podcasts:', err);
       }
     };
 
@@ -90,15 +90,9 @@ const Home = () => {
         return;
       }
       const token = localStorage.getItem('token');
-      if (isFavorited(podcast)) {
-        // Unlike
-        await fetch('https://podcast-0wqi.onrender.com/api/unlike', {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email: user.email, podcastId: podcast.id })
-        });
-      } else {
-        // Like
+      const userChoice = window.confirm('Do you want to add this podcast to an existing card? Click OK for existing, Cancel for new.');
+      if (userChoice) {
+        // Add to existing card logic
         await fetch('https://podcast-0wqi.onrender.com/api/like', {
           method: 'POST',
           headers: {
@@ -107,6 +101,10 @@ const Home = () => {
           },
           body: JSON.stringify({ podcast: { ...podcast, favoriteType: 'podcast' } })
         });
+      } else {
+        // Create new card logic
+        // This could involve a different API call or logic to handle new card creation
+        console.log('Creating a new card for the podcast');
       }
       fetchLikedPodcasts();
     };
@@ -141,7 +139,7 @@ const Home = () => {
                         <div className="cards">
                             {featuredPodcasts.map((podcast) => (
                                 <div key={podcast.id} className="card podcast-card" style={{ cursor: 'pointer', position: 'relative' }} onClick={() => handleCardClick(podcast)}>
-                                    <img src={podcast.images[0]?.url} alt={podcast.name} style={{ width: "100%", borderRadius: 8 }} />
+                                    <img src={podcast.images[0]?.url} alt={podcast.name} style={{ width: "100%", height: "auto", borderRadius: 8 }} />
                                     <div className="card-content">
                                         <h3 className="card-title">{podcast.name}</h3>
                                         <p className="card-host">{podcast.publisher}</p>
@@ -169,7 +167,7 @@ const Home = () => {
                         <div className="cards">
                             {trendingShows.map((show) => (
                                 <div key={show.id} className="card show-card" style={{ cursor: 'pointer', position: 'relative' }} onClick={() => handleCardClick(show)}>
-                                    <img src={show.images[0]?.url} alt={show.name} style={{ width: "100%", borderRadius: 8 }} />
+                                    <img src={show.images[0]?.url} alt={show.name} style={{ width: "100%", height: "auto", borderRadius: 8 }} />
                                     <div className="card-content">
                                         <h3 className="card-title">{show.name}</h3>
                                         <p className="card-category">{show.publisher}</p>

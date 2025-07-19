@@ -47,6 +47,24 @@ const Favorites = () => {
       navigate('/player', { state: { podcast } });
     };
 
+    const handleAddToFavorites = (podcast, isNewCard) => {
+      if (isNewCard) {
+        // Logic to create a new card
+        setFavorites([...favorites, podcast]);
+      } else {
+        // Logic to add to an existing card
+        const updatedFavorites = favorites.map(fav =>
+          fav.id === podcast.id ? { ...fav, ...podcast } : fav
+        );
+        setFavorites(updatedFavorites);
+      }
+      saveFavoritesToStorage(favorites);
+    };
+
+    // Use this function when handling the user's choice from Home.jsx
+    // Example usage:
+    // handleAddToFavorites(selectedPodcast, userChoice === false);
+
     if (!user) return <div style={{ color: '#fff', textAlign: 'center', marginTop: 40 }}>Please log in to view your favorites.</div>;
 
     return (

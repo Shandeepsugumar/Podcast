@@ -37,6 +37,26 @@
   }
 }
 
+@media (max-width: 768px) {
+  .app {
+    flex-direction: column;
+  }
+  .main-content {
+    margin-left: 0;
+    padding: 1rem;
+  }
+  .cards {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .card {
+    min-width: 140px;
+    max-width: 180px;
+  }
+}
+
 /* Sections */
 .section {
   margin-top: 10px;
