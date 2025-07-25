@@ -1,6 +1,3 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
 import Navbar from './components/Navbar'
 import { Route, Router, Routes } from 'react-router-dom'
@@ -14,6 +11,7 @@ import Signup from './pages/Signup'
 import Sidebar from './components/sidebar'
 import PlayerPage from './pages/PlayerPage'
 import Profile from './pages/Profile'
+import PodcastFooter from './components/Footer';
 
 function App() {
 

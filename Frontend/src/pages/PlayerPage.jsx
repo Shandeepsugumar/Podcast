@@ -7,6 +7,41 @@ function formatDate(dateStr) {
   return date.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
 }
 
+// Update the EpisodeCard component to display individual episodes in a row
+const EpisodeCard = ({ episode, isSelected, onSelect, onPlay, onViewContent }) => {
+  // Update the cardStyle to match the podcast card hover effect
+  const cardStyle = {
+    background: isSelected ? 'rgba(65, 110, 233, 0.76)' : 'rgba(34, 3, 87, 0.76)',
+    borderRadius: '8px',
+    boxShadow: '0 4px 8px rgb(16, 132, 215)',
+    padding: '16px',
+    marginBottom: '16px',
+    transition: 'transform 0.2s, box-shadow 0.2s',
+    cursor: 'pointer',
+    width: '200px',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    ':hover': {
+      transform: 'scale(1.05)',
+      boxShadow: '0 12px 24px rgb(16, 132, 215)',
+      zIndex: 1,
+    },
+  };
+
+  return (
+    <div style={cardStyle}>
+      <div style={{ fontWeight: 'bold', color: '#4db8ff', marginBottom: '8px' }}>{episode.title}</div>
+      <button onClick={onPlay} style={{ background: '#007bff', color: '#fff', border: 'none', borderRadius: '24px', padding: '8px 16px', fontSize: '14px', cursor: 'pointer', marginBottom: '8px' }}>
+        ▶ Play
+      </button>
+      <button onClick={onViewContent} style={{ background: '#aaa', color: '#fff', border: 'none', borderRadius: '24px', padding: '8px 16px', fontSize: '14px', cursor: 'pointer' }}>
+        View & Translate
+      </button>
+    </div>
+  );
+};
+
 const PlayerPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -62,6 +97,29 @@ const PlayerPage = () => {
     }, 0);
   };
 
+  // Add a function to handle playing the selected episode
+  const handlePlayEpisode = (episode) => {
+    setSelectedEpisode(episode);
+    setIsPlaying(false);
+    setTimeout(() => {
+      if (audioRef.current) {
+        audioRef.current.load();
+        audioRef.current.play();
+        setIsPlaying(true);
+      }
+    }, 0);
+  };
+
+  // Update the EpisodeCard component usage to include the play functionality
+  const handleViewContent = (episode) => {
+    // This function is not fully implemented in the original code,
+    // but it's included in the edit hint.
+    // For now, it will just log the episode title.
+    console.log(`Viewing content for episode: ${episode.title}`);
+    // Example: Navigate to a new page for content
+    // navigate('/episode-content', { state: { episode } });
+  };
+
   if (!podcast) return <div style={{ color: '#fff', textAlign: 'center', marginTop: 40 }}>No podcast selected.</div>;
 
   return (
@@ -100,19 +158,17 @@ const PlayerPage = () => {
                   ❚❚ Pause
                 </button>
               </div>
-              <div style={{ textAlign: 'left', margin: '0 auto', maxWidth: 700 }}>
-                <h2>Episodes</h2>
-                <ul style={{ listStyle: 'none', padding: 0 }}>
-                  {episodes.map((ep, idx) => (
-                    <li key={idx} style={{ marginBottom: 16, background: selectedEpisode === ep ? '#222' : 'transparent', borderRadius: 8, padding: 8 }}>
-                      <div style={{ fontWeight: 'bold', cursor: 'pointer', color: selectedEpisode === ep ? '#4db8ff' : '#fff' }} onClick={() => handleSelectEpisode(ep)}>
-                        {ep.title}
-                      </div>
-                      <div style={{ fontSize: 14, color: '#ccc' }}>{ep.pubDate}</div>
-                      <div style={{ fontSize: 14, color: '#aaa' }}>{ep.description}</div>
-                    </li>
-                  ))}
-                </ul>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '16px' }}>
+                {episodes.map((ep, idx) => (
+                  <EpisodeCard
+                    key={idx}
+                    episode={ep}
+                    isSelected={selectedEpisode === ep}
+                    onSelect={() => handleSelectEpisode(ep)}
+                    onPlay={() => handlePlayEpisode(ep)}
+                    onViewContent={() => handleViewContent(ep)}
+                  />
+                ))}
               </div>
             </>
           )}

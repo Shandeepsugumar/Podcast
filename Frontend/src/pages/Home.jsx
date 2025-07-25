@@ -124,7 +124,7 @@ const Home = () => {
                 <Sidebar />
                 <main className="main-content">
                     <div className="welcome-section">
-                        <h1>Welcome back! 👋</h1>
+                        <h1>Welcome to podcast👋</h1>
                         <p>Discover amazing podcasts and stay updated with your favorite shows.</p>
                     </div>
 
@@ -190,6 +190,7 @@ const Home = () => {
                     </>}
                 </main>
             </div>
+
         </div>
     );
 };
