@@ -55,15 +55,10 @@ const Home = () => {
         setLoading(true);
         setError(null);
         const fetchPodcasts = async () => {
-          const token = localStorage.getItem('token');
-          const res = await fetch('https://podcast-0wqi.onrender.com/api/user/languages', {
-            headers: { 'Authorization': `Bearer ${token}` }
-          });
-          const userLanguages = res.ok ? await res.json() : [];
-          const languageQuery = userLanguages.map(lang => `language=${encodeURIComponent(lang)}`).join('&');
+          // Removed language fetch and filtering
           Promise.all([
-            fetch(`${BACKEND_API_URL}?query=news&${languageQuery}`).then(res => res.ok ? res.json() : []),
-            fetch(`${BACKEND_API_URL}?query=comedy&${languageQuery}`).then(res => res.ok ? res.json() : [])
+            fetch(`${BACKEND_API_URL}?query=news`).then(res => res.ok ? res.json() : []),
+            fetch(`${BACKEND_API_URL}?query=comedy`).then(res => res.ok ? res.json() : [])
           ])
           .then(([featured, trending]) => {
             setFeaturedPodcasts(Array.isArray(featured) ? featured : []);

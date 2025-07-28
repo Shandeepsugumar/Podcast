@@ -12,7 +12,6 @@ const Profile = () => {
   const [error, setError] = useState(null);
   const [profileImgUrl, setProfileImgUrl] = useState(null);
   const fileInputRef = useRef();
-  const [languages, setLanguages] = useState(profile?.languages || []);
 
   useEffect(() => {
     if (!user) return;
@@ -66,34 +65,6 @@ const Profile = () => {
     }
   };
 
-  const handleLanguageChange = (e) => {
-    const options = e.target.options;
-    const selectedLanguages = [];
-    for (let i = 0, l = options.length; i < l; i++) {
-      if (options[i].selected) {
-        selectedLanguages.push(options[i].value);
-      }
-    }
-    setLanguages(selectedLanguages);
-  };
-
-  const handleLanguageUpdate = async () => {
-    const token = localStorage.getItem('token');
-    const res = await fetch('https://podcast-0wqi.onrender.com/api/profile/languages', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
-      body: JSON.stringify({ languages })
-    });
-    if (res.ok) {
-      alert('Languages updated successfully!');
-    } else {
-      alert('Failed to update languages.');
-    }
-  };
-
   if (!user) return <div style={{ color: '#fff', textAlign: 'center', marginTop: 40 }}>Please log in to view your profile.</div>;
   if (loading) return <div style={{ color: '#fff', textAlign: 'center', marginTop: 40 }}>Loading profile...</div>;
   if (error) return <div style={{ color: 'red', textAlign: 'center', marginTop: 40 }}>{error}</div>;
@@ -138,19 +109,7 @@ const Profile = () => {
       ) : (
         <p>No liked podcasts yet.</p>
       )}
-      <h2>Preferred Languages</h2>
-      <select
-        multiple
-        value={languages}
-        onChange={handleLanguageChange}
-      >
-        <option value="English">English</option>
-        <option value="Spanish">Spanish</option>
-        <option value="French">French</option>
-        <option value="German">German</option>
-        <option value="Chinese">Chinese</option>
-      </select>
-      <button onClick={handleLanguageUpdate}>Update Languages</button>
+      {/* Removed Preferred Languages select and update button */}
     </div>
   );
 };
