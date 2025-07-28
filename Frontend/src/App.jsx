@@ -11,23 +11,25 @@ import Signup from './pages/Signup'
 import Sidebar from './components/sidebar'
 import PlayerPage from './pages/PlayerPage'
 import Profile from './pages/Profile'
-import PodcastFooter from './components/Footer';
+import Footer from './components/Footer';
 
 function App() {
 
   return (
-    <div style={{ paddingTop: '80px' }}>
+    <div className="App" style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', paddingTop: '80px' }}>
       <Navbar/>
-      <Routes>
-        <Route path="/" element={<><Sidebar /><Home /></>} />
-        <Route path="/explore" element={<><Sidebar /><Explore /></>} />
-        <Route path="/favorites" element={<><Sidebar /><Favorites /></>} />
-        <Route path="/about" element={<><Sidebar /><About /></>} />
-        <Route path="/login" element={<><Sidebar /><Login /></>} />
-        <Route path="/signup" element={<><Sidebar /><Signup /></>} />
-        <Route path="/player" element={<><Sidebar /><PlayerPage /></>} />
-        <Route path="/profile" element={<><Sidebar /><Profile /></>} />
-      </Routes>
+      <div style={{ flex: 1 }}>
+        <Routes>
+          <Route path="/" element={<><Sidebar /><Home /></>} />
+          <Route path="/explore" element={<><Sidebar /><Explore /></>} />
+          <Route path="/favorites" element={<><Sidebar /><Favorites /></>} />
+          <Route path="/about" element={<><Sidebar /><About /></>} />
+          <Route path="/login" element={<><Sidebar /><Login /></>} />
+          <Route path="/signup" element={<><Sidebar /><Signup /></>} />
+          <Route path="/player" element={<><Sidebar /><PlayerPage /></>} />
+          <Route path="/profile" element={<><Sidebar /><Profile /></>} />
+        </Routes>
+      </div>
     </div>
   )
 }

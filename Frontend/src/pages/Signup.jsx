@@ -2,11 +2,22 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
 const Signup = () => {
-  const [form, setForm] = useState({ name: '', email: '', password: '' });
+  const [form, setForm] = useState({ name: '', email: '', password: '', languages: [] });
   const [msg, setMsg] = useState('');
   const navigate = useNavigate();
 
   const handleChange = e => setForm({ ...form, [e.target.name]: e.target.value });
+
+  const handleLanguageChange = (e) => {
+    const options = e.target.options;
+    const selectedLanguages = [];
+    for (let i = 0, l = options.length; i < l; i++) {
+      if (options[i].selected) {
+        selectedLanguages.push(options[i].value);
+      }
+    }
+    setForm({ ...form, languages: selectedLanguages });
+  };
 
   const handleSubmit = async e => {
     e.preventDefault();
@@ -50,6 +61,19 @@ const Signup = () => {
           onChange={handleChange}
           required
         />
+        <select
+          name="languages"
+          multiple
+          value={form.languages}
+          onChange={handleLanguageChange}
+          required
+        >
+          <option value="English">English</option>
+          <option value="Spanish">Spanish</option>
+          <option value="French">French</option>
+          <option value="German">German</option>
+          <option value="Chinese">Chinese</option>
+        </select>
         <button type="submit">Sign Up</button>
         <div>{msg}</div>
         <p>Already have an account? <Link to="/login">Login</Link></p>

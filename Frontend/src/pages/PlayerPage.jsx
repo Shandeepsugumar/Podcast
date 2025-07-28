@@ -1,5 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import './PlayerPage.css';
 
 function formatDate(dateStr) {
   if (!dateStr) return '';
@@ -11,32 +12,25 @@ function formatDate(dateStr) {
 const EpisodeCard = ({ episode, isSelected, onSelect, onPlay, onViewContent }) => {
   // Update the cardStyle to match the podcast card hover effect
   const cardStyle = {
-    background: isSelected ? 'rgba(65, 110, 233, 0.76)' : 'rgba(34, 3, 87, 0.76)',
-    borderRadius: '8px',
-    boxShadow: '0 4px 8px rgb(16, 132, 215)',
-    padding: '16px',
-    marginBottom: '16px',
-    transition: 'transform 0.2s, box-shadow 0.2s',
+    background: isSelected ? 'linear-gradient(135deg, #ff9a9e, #fad0c4)' : 'linear-gradient(135deg, #a18cd1, #fbc2eb)',
+    borderRadius: '15px',
+    boxShadow: '0 8px 16px rgba(0, 0, 0, 0.2)',
+    padding: '20px',
+    marginBottom: '20px',
+    transition: 'transform 0.4s, box-shadow 0.4s, z-index 0.4s',
     cursor: 'pointer',
-    width: '200px',
+    width: '260px',
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    ':hover': {
-      transform: 'scale(1.05)',
-      boxShadow: '0 12px 24px rgb(16, 132, 215)',
-      zIndex: 1,
-    },
+    position: 'relative',
   };
 
   return (
-    <div style={cardStyle}>
-      <div style={{ fontWeight: 'bold', color: '#4db8ff', marginBottom: '8px' }}>{episode.title}</div>
-      <button onClick={onPlay} style={{ background: '#007bff', color: '#fff', border: 'none', borderRadius: '24px', padding: '8px 16px', fontSize: '14px', cursor: 'pointer', marginBottom: '8px' }}>
+    <div style={cardStyle} className="episode-card">
+      <div style={{ fontWeight: '700', color: '#fff', marginBottom: '14px', fontSize: '18px', textShadow: '1px 1px 2px rgba(0, 0, 0, 0.2)' }}>{episode.title}</div>
+      <button onClick={onPlay} style={{ background: '#ff6f61', color: '#fff', border: 'none', borderRadius: '20px', padding: '12px 24px', fontSize: '15px', cursor: 'pointer', marginBottom: '12px', transition: 'background 0.3s', ':hover': { background: '#e55b50' } }}>
         ▶ Play
-      </button>
-      <button onClick={onViewContent} style={{ background: '#aaa', color: '#fff', border: 'none', borderRadius: '24px', padding: '8px 16px', fontSize: '14px', cursor: 'pointer' }}>
-        View & Translate
       </button>
     </div>
   );
@@ -158,7 +152,7 @@ const PlayerPage = () => {
                   ❚❚ Pause
                 </button>
               </div>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '16px' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px' }}>
                 {episodes.map((ep, idx) => (
                   <EpisodeCard
                     key={idx}

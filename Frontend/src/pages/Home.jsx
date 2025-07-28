@@ -54,21 +54,28 @@ const Home = () => {
     useEffect(() => {
         setLoading(true);
         setError(null);
-        // Fetch featured and trending podcasts from backend (iTunes)
-        Promise.all([
-          fetch(`${BACKEND_API_URL}?query=news`).then(res => res.ok ? res.json() : []),
-          fetch(`${BACKEND_API_URL}?query=comedy`).then(res => res.ok ? res.json() : [])
-        ])
-        .then(([featured, trending]) => {
-          setFeaturedPodcasts(Array.isArray(featured) ? featured : []);
-          setTrendingShows(Array.isArray(trending) ? trending : []);
-          setLoading(false);
-        })
-        .catch(() => {
-          setError("Failed to load podcast data.");
-          setLoading(false);
-        });
-        // Fetch liked podcasts after login
+        const fetchPodcasts = async () => {
+          const token = localStorage.getItem('token');
+          const res = await fetch('https://podcast-0wqi.onrender.com/api/user/languages', {
+            headers: { 'Authorization': `Bearer ${token}` }
+          });
+          const userLanguages = res.ok ? await res.json() : [];
+          const languageQuery = userLanguages.map(lang => `language=${encodeURIComponent(lang)}`).join('&');
+          Promise.all([
+            fetch(`${BACKEND_API_URL}?query=news&${languageQuery}`).then(res => res.ok ? res.json() : []),
+            fetch(`${BACKEND_API_URL}?query=comedy&${languageQuery}`).then(res => res.ok ? res.json() : [])
+          ])
+          .then(([featured, trending]) => {
+            setFeaturedPodcasts(Array.isArray(featured) ? featured : []);
+            setTrendingShows(Array.isArray(trending) ? trending : []);
+            setLoading(false);
+          })
+          .catch(() => {
+            setError("Failed to load podcast data.");
+            setLoading(false);
+          });
+        };
+        fetchPodcasts();
         fetchLikedPodcasts();
     }, []);
 
