@@ -8,6 +8,7 @@ import jwt from 'jsonwebtoken';
 import request from 'request';
 import Parser from 'rss-parser';
 import multer from 'multer';
+import nodemailer from 'nodemailer';
 
 const mongoUri = process.env.MONGODB_URI;
 const JWT_SECRET = process.env.JWT_SECRET;
@@ -47,6 +48,32 @@ app.post('/api/signup', async (req, res) => {
   const hashed = await bcrypt.hash(password, 10);
   const user = new User({ name, email, password: hashed, likedPodcasts: [] });
   await user.save();
+
+  // Send welcome email
+  try {
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: process.env.EMAIL_USER, // set in your environment variables
+        pass: process.env.EMAIL_PASS  // set in your environment variables
+      }
+    });
+    await transporter.sendMail({
+      from: `"Podcast Library" <${process.env.EMAIL_USER}>`,
+      to: email,
+      subject: 'Welcome to Podcast Library!',
+      html: `<h2>Welcome to Podcast Library, ${name}!</h2>
+        <p>Thank you for registering. We're excited to have you join our community of podcast lovers.</p>
+        <p>Explore, listen, and enjoy a world of podcasts. If you have any questions, feel free to reply to this email.</p>
+        <br>
+        <b>Happy listening!</b><br>
+        The Podcast Library Team`
+    });
+  } catch (err) {
+    console.error('Error sending welcome email:', err);
+    // Don't block registration if email fails
+  }
+
   res.json({ success: true });
 });
 

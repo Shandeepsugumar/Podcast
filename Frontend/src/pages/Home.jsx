@@ -135,7 +135,7 @@ const Home = () => {
                         <p>Discover amazing podcasts and stay updated with your favorite shows.</p>
                     </div>
 
-                    {loading && <div style={{margin: '2rem 0'}}>Loading...</div>}
+                    {loading && <div className="spinner"></div>}
                     {error && <div style={{color: 'red', margin: '2rem 0'}}>{error}</div>}
 
                     {!loading && !error && <>
