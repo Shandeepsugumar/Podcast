@@ -30,6 +30,7 @@
 .main-content {
   margin-left: 250px;
   transition: margin-left 0.3s;
+  margin-top: 80px;
   box-sizing: border-box;
 }
 

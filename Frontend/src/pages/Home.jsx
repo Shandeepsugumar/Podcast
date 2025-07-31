@@ -1,15 +1,13 @@
 import Sidebar from "../components/sidebar";
-import Navbar from "../components/Navbar";
+// import Navbar from "../components/Navbar";
 import "../App.css";
 import "../components/sidebar.css";
 import "../components/Navbar.css";
 import { useEffect, useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import { useUser } from '../UserContext';
+import ChatBot from '../components/ChatBot';
 
-const BACKEND_API_URL = "https://podcast-0wqi.onrender.com/api/search";
-const API_LIKED_URL = "https://podcast-0wqi.onrender.com/api/liked";
-const API_LIKE_URL = "https://podcast-0wqi.onrender.com/api/like";
 const FAVORITES_KEY = "podcast_favorites";
 
 const getFavoritesFromStorage = () => {
@@ -24,11 +22,7 @@ const saveFavoritesToStorage = (favorites) => {
   localStorage.setItem(FAVORITES_KEY, JSON.stringify(favorites));
 };
 
-const Home = () => {
-    const [featuredPodcasts, setFeaturedPodcasts] = useState([]);
-    const [trendingShows, setTrendingShows] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+const Home = ({ featuredPodcasts = [], trendingShows = [], loading = false, error = null }) => {
     const [favorites, setFavorites] = useState(getFavoritesFromStorage());
     const navigate = useNavigate();
     const { user } = useUser();
@@ -38,7 +32,7 @@ const Home = () => {
       const token = localStorage.getItem('token');
       if (!token || !user || !user.email) return;
       try {
-        const res = await fetch(`${API_LIKED_URL}?email=${encodeURIComponent(user.email)}`, {
+        const res = await fetch(`https://podcast-0wqi.onrender.com/api/liked?email=${encodeURIComponent(user.email)}`, {
           headers: { 'Authorization': `Bearer ${token}` }
         });
         if (res.ok) {
@@ -52,32 +46,8 @@ const Home = () => {
     };
 
     useEffect(() => {
-        setLoading(true);
-        setError(null);
-        const fetchPodcasts = async () => {
-          // Removed language fetch and filtering
-          Promise.all([
-            fetch(`${BACKEND_API_URL}?query=news`).then(res => res.ok ? res.json() : []),
-            fetch(`${BACKEND_API_URL}?query=comedy`).then(res => res.ok ? res.json() : [])
-          ])
-          .then(([featured, trending]) => {
-            setFeaturedPodcasts(Array.isArray(featured) ? featured : []);
-            setTrendingShows(Array.isArray(trending) ? trending : []);
-            setLoading(false);
-          })
-          .catch(() => {
-            setError("Failed to load podcast data.");
-            setLoading(false);
-          });
-        };
-        fetchPodcasts();
         fetchLikedPodcasts();
-    }, []);
-
-    useEffect(() => {
-      if (user && user.email) {
-        fetchLikedPodcasts();
-      }
+        // eslint-disable-next-line
     }, [user]);
 
     useEffect(() => {
@@ -126,7 +96,6 @@ const Home = () => {
 
     return (
         <div className="home-root">
-            <Navbar />
             <div className="app">
                 <Sidebar />
                 <main className="main-content">
@@ -197,7 +166,6 @@ const Home = () => {
                     </>}
                 </main>
             </div>
-
         </div>
     );
 };

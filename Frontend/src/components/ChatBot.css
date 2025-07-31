@@ -1,0 +1,79 @@
+.chatbot-floating-btn {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  border-radius: 50%;
+  width: 56px;
+  height: 56px;
+  background: #6c63ff;
+  color: #fff;
+  font-size: 28px;
+  border: none;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  z-index: 1000;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.chatbot-window {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  width: 320px;
+  background: #23272f;
+  border-radius: 12px;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.2);
+  z-index: 1000;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  color: #fff;
+}
+
+.chatbot-close-btn {
+  align-self: flex-end;
+  background: none;
+  border: none;
+  font-size: 20px;
+  color: #fff;
+  cursor: pointer;
+}
+
+.chatbot-mood-btns button {
+  background: #393e46;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 14px;
+  margin: 4px 0;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.chatbot-mood-btns button:hover {
+  background: #6c63ff;
+}
+
+.chatbot-podcast-link {
+  display: block;
+  background: #6c63ff;
+  color: #fff;
+  padding: 8px 12px;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: 500;
+  margin-bottom: 8px;
+  text-align: center;
+}
+
+.chatbot-back-btn {
+  background: none;
+  border: none;
+  color: #6c63ff;
+  cursor: pointer;
+  font-size: 16px;
+  margin-top: 8px;
+}

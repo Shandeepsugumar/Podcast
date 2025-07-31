@@ -1,6 +1,7 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import './PlayerPage.css';
+import Sidebar from '../components/sidebar';
 
 function formatDate(dateStr) {
   if (!dateStr) return '';
@@ -117,61 +118,64 @@ const PlayerPage = () => {
   if (!podcast) return <div style={{ color: '#fff', textAlign: 'center', marginTop: 40 }}>No podcast selected.</div>;
 
   return (
-    <div style={{ maxWidth: 900, margin: '40px auto', color: '#fff', minHeight: '80vh', display: 'flex', flexDirection: 'column' }}>
-      <div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 32, marginBottom: 24 }}>
-          <img src={podcast.images[0]?.url} alt={podcast.name} style={{ width: 200, borderRadius: 16, boxShadow: '0 4px 16px #0004' }} />
-          <div>
-            <h1 style={{ margin: 0 }}>{podcast.name}</h1>
-            <p style={{ color: '#ccc', margin: '8px 0' }}>{podcast.publisher}</p>
-            <p style={{ fontSize: 16 }}>{podcast.description}</p>
-          </div>
-        </div>
-        <div style={{ textAlign: 'center', margin: '32px 0 0 0' }}>
-          {loading && <div>Loading episodes...</div>}
-          {error && <div style={{ color: 'red' }}>{error}</div>}
-          {!loading && !error && episodes.length > 0 && (
-            <>
-              <audio ref={audioRef} controls style={{ width: '100%', marginBottom: 16 }}>
-                <source src={selectedEpisode?.audioUrl} type="audio/mpeg" />
-                Your browser does not support the audio element.
-              </audio>
-              <div style={{ marginBottom: 16 }}>
-                <button
-                  style={{ background: '#007bff', color: '#fff', border: 'none', borderRadius: 24, padding: '12px 32px', fontSize: 18, cursor: 'pointer', marginRight: 8 }}
-                  onClick={handlePlay}
-                  disabled={isPlaying || !selectedEpisode}
-                >
-                  ▶ Play
-                </button>
-                <button
-                  style={{ background: '#aaa', color: '#fff', border: 'none', borderRadius: 24, padding: '12px 32px', fontSize: 18, cursor: 'pointer' }}
-                  onClick={handlePause}
-                  disabled={!isPlaying}
-                >
-                  ❚❚ Pause
-                </button>
-              </div>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px' }}>
-                {episodes.map((ep, idx) => (
-                  <EpisodeCard
-                    key={idx}
-                    episode={ep}
-                    isSelected={selectedEpisode === ep}
-                    onSelect={() => handleSelectEpisode(ep)}
-                    onPlay={() => handlePlayEpisode(ep)}
-                    onViewContent={() => handleViewContent(ep)}
-                  />
-                ))}
-              </div>
-            </>
-          )}
-          {!loading && !error && episodes.length === 0 && (
-            <div style={{ color: '#ccc', fontSize: 18, margin: '2rem 0' }}>
-              No episodes available for this podcast.<br />
-              This podcast may be unavailable or not have any public episodes.
+    <div style={{ display: 'flex' }}>
+      <Sidebar />
+      <div className="player-main-content" style={{ maxWidth: 900, color: '#fff', minHeight: '80vh', display: 'flex', flexDirection: 'column', flex: 1 }}>
+        <div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 32, marginBottom: 24 }}>
+            <img src={podcast.images[0]?.url} alt={podcast.name} style={{ width: 200, borderRadius: 16, boxShadow: '0 4px 16px #0004' }} />
+            <div>
+              <h1 style={{ margin: 0 }}>{podcast.name}</h1>
+              <p style={{ color: '#ccc', margin: '8px 0' }}>{podcast.publisher}</p>
+              <p style={{ fontSize: 16 }}>{podcast.description}</p>
             </div>
-          )}
+          </div>
+          <div style={{ textAlign: 'center', margin: '32px 0 0 0' }}>
+            {loading && <div>Loading episodes...</div>}
+            {error && <div style={{ color: 'red' }}>{error}</div>}
+            {!loading && !error && episodes.length > 0 && (
+              <>
+                <audio ref={audioRef} controls style={{ width: '100%', marginBottom: 16 }}>
+                  <source src={selectedEpisode?.audioUrl} type="audio/mpeg" />
+                  Your browser does not support the audio element.
+                </audio>
+                <div style={{ marginBottom: 16 }}>
+                  <button
+                    style={{ background: '#007bff', color: '#fff', border: 'none', borderRadius: 24, padding: '12px 32px', fontSize: 18, cursor: 'pointer', marginRight: 8 }}
+                    onClick={handlePlay}
+                    disabled={isPlaying || !selectedEpisode}
+                  >
+                    ▶ Play
+                  </button>
+                  <button
+                    style={{ background: '#aaa', color: '#fff', border: 'none', borderRadius: 24, padding: '12px 32px', fontSize: 18, cursor: 'pointer' }}
+                    onClick={handlePause}
+                    disabled={!isPlaying}
+                  >
+                    ❚❚ Pause
+                  </button>
+                </div>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px' }}>
+                  {episodes.map((ep, idx) => (
+                    <EpisodeCard
+                      key={idx}
+                      episode={ep}
+                      isSelected={selectedEpisode === ep}
+                      onSelect={() => handleSelectEpisode(ep)}
+                      onPlay={() => handlePlayEpisode(ep)}
+                      onViewContent={() => handleViewContent(ep)}
+                    />
+                  ))}
+                </div>
+              </>
+            )}
+            {!loading && !error && episodes.length === 0 && (
+              <div style={{ color: '#ccc', fontSize: 18, margin: '2rem 0' }}>
+                No episodes available for this podcast.<br />
+                This podcast may be unavailable or not have any public episodes.
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>
