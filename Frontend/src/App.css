@@ -28,19 +28,14 @@
 
 /* Main Content */
 .main-content {
-  flex: 1 1 auto;
-  margin-left: 70px;
-  margin-right: 70px;
-  padding: 0 2rem 2rem 2rem;
-  overflow-y: auto;
-  height: 100%;
+  margin-left: 250px;
   transition: margin-left 0.3s;
   box-sizing: border-box;
 }
 
 @media (min-width: 700px) {
   .main-content {
-    margin-left: 250px;
+    margin-left: 320px;
   }
 }
 

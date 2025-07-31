@@ -92,9 +92,18 @@ const Home = () => {
         return;
       }
       const token = localStorage.getItem('token');
-      const userChoice = window.confirm('Do you want to add this podcast to an existing card? Click OK for existing, Cancel for new.');
-      if (userChoice) {
-        // Add to existing card logic
+      if (isFavorited(podcast)) {
+        // Unlike the podcast
+        await fetch('https://podcast-0wqi.onrender.com/api/unlike', {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({ email: user.email, podcastId: podcast.id })
+        });
+      } else {
+        // Like the podcast
         await fetch('https://podcast-0wqi.onrender.com/api/like', {
           method: 'POST',
           headers: {
@@ -103,10 +112,6 @@ const Home = () => {
           },
           body: JSON.stringify({ podcast: { ...podcast, favoriteType: 'podcast' } })
         });
-      } else {
-        // Create new card logic
-        // This could involve a different API call or logic to handle new card creation
-        console.log('Creating a new card for the podcast');
       }
       fetchLikedPodcasts();
     };
