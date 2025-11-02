@@ -1,6 +1,6 @@
 import './App.css'
 import React, { useEffect, useState } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useLocation } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Home from './pages/Home';
 import Explore from './pages/Explore';
@@ -12,6 +12,7 @@ import PlayerPage from './pages/PlayerPage';
 import Profile from './pages/Profile';
 import Footer from './components/Footer';
 import ChatBot from './components/ChatBot';
+import AdBanner from './components/AdBanner';
 
 const BACKEND_API_URL = "https://podcast-0wqi.onrender.com/api/search";
 
@@ -20,6 +21,7 @@ function App() {
   const [trendingShows, setTrendingShows] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const location = useLocation();
 
   useEffect(() => {
     setLoading(true);
@@ -53,7 +55,14 @@ function App() {
         <Route path="/profile" element={<Profile />} />
       </Routes>
       <ChatBot podcasts={[...featuredPodcasts, ...trendingShows]} />
-      <Footer />
+      <AdBanner />
+      {![
+        '/favorites',
+        '/about',
+        '/profile',
+        '/login',
+        '/signup'
+      ].includes(location.pathname) && <Footer />}
     </div>
   );
 }

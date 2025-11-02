@@ -1,12 +1,13 @@
 body, .explore-container {
   min-height: 100vh;
-  background-color: #yourBackgroundColor; /* Replace with your desired color */
+  min-width: 100vw;
+  background-color: #511091; /* Replace with your desired color */
 }
 
 .explore-container {
   max-width: 1000px;
-  margin: 40px auto;
-  padding: 2rem;
+  margin: 40px auto 0 auto;
+  padding: 2rem 2rem 0.5rem 2rem;
 }
 
 .explore-title {

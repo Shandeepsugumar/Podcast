@@ -2,6 +2,7 @@ import React, { useRef, useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import './PlayerPage.css';
 import Sidebar from '../components/sidebar';
+import { usePlayer } from '../components/PlayerContext';
 
 function formatDate(dateStr) {
   if (!dateStr) return '';
@@ -47,6 +48,7 @@ const PlayerPage = () => {
   const [selectedEpisode, setSelectedEpisode] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const { playAdIfNeeded, playTrack } = usePlayer();
 
   useEffect(() => {
     if (podcast?.feedUrl) {
@@ -94,15 +96,33 @@ const PlayerPage = () => {
 
   // Add a function to handle playing the selected episode
   const handlePlayEpisode = (episode) => {
-    setSelectedEpisode(episode);
-    setIsPlaying(false);
-    setTimeout(() => {
-      if (audioRef.current) {
-        audioRef.current.load();
-        audioRef.current.play();
-        setIsPlaying(true);
-      }
-    }, 0);
+    // Play ad if needed, then play episode
+    if (playAdIfNeeded(() => playTrack(episode))) {
+      setSelectedEpisode({ title: 'Sponsored Ad', audioUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' });
+      setIsPlaying(true);
+      setTimeout(() => {
+        setIsPlaying(false);
+        setSelectedEpisode(episode);
+        setTimeout(() => {
+          if (audioRef.current) {
+            audioRef.current.load();
+            audioRef.current.play();
+            setIsPlaying(true);
+          }
+        }, 0);
+      }, 10000); // 10s ad duration
+    } else {
+      setSelectedEpisode(episode);
+      setIsPlaying(false);
+      setTimeout(() => {
+        if (audioRef.current) {
+          audioRef.current.load();
+          audioRef.current.play();
+          setIsPlaying(true);
+        }
+      }, 0);
+      playTrack(episode);
+    }
   };
 
   // Update the EpisodeCard component usage to include the play functionality

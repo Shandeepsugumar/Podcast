@@ -27,7 +27,8 @@ const userSchema = new mongoose.Schema({
   email: { type: String, unique: true },
   password: String,
   likedPodcasts: { type: Array, default: [] },
-  profileImage: Buffer // Add profile image as binary
+  profileImage: Buffer, // Add profile image as binary
+  createdAt: { type: Date, default: Date.now } // Add timestamp field
 });
 const User = mongoose.model('Profile', userSchema);
 
@@ -106,7 +107,12 @@ app.get('/api/profile', async (req, res) => {
   if (!email) return res.status(400).json({ error: 'Missing email' });
   const user = await User.findOne({ email });
   if (!user) return res.status(404).json({ error: 'User not found' });
-  res.json({ name: user.name, email: user.email, likedPodcasts: user.likedPodcasts || [] });
+  res.json({ 
+    name: user.name, 
+    email: user.email, 
+    likedPodcasts: user.likedPodcasts || [],
+    createdAt: user.createdAt
+  });
 });
 
 // Get liked podcasts (public, by email)
