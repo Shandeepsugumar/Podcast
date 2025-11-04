@@ -1,6 +1,8 @@
 import dotenv from 'dotenv';
 dotenv.config();
 import express from 'express';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import cors from 'cors';
 import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
@@ -250,6 +252,18 @@ app.get('/api/episodes', async function(req, res) {
 });
 
 const PORT = process.env.PORT || 3000;
+// Serve frontend static files when available (assumes built frontend copied to ./public)
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+app.use(express.static(path.join(__dirname, 'public')));
+
+// Fallback to index.html for client-side routing (only for non-API requests)
+app.get('*', (req, res, next) => {
+  if (req.path.startsWith('/api')) return next();
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });
