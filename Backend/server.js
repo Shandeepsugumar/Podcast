@@ -233,6 +233,10 @@ app.get('/api/episodes', async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch or parse RSS feed', details: err.message });
   }
 });
+// ====== Health Check Route ======
+app.get('/health', (req, res) => {
+  res.status(200).send('OK');
+});
 
 // ====== Start Server ======
 app.listen(PORT, '0.0.0.0', () => {
