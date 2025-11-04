@@ -33,10 +33,12 @@ ENV NODE_ENV=production
 ENV PORT=3000
 EXPOSE 3000
 
-# Healthcheck to ensure server is alive
+# Install curl for healthcheck
 RUN apk add --no-cache curl
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s \
-  CMD curl -f http://localhost:${PORT}/ || exit 1
+
+# ✅ Healthcheck — ensures backend is alive
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+  CMD curl -f http://localhost:${PORT}/health || exit 1
 
 # Start the backend (which now serves frontend too)
 CMD ["node", "server.js"]
