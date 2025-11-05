@@ -75,10 +75,9 @@ pipeline {
                     echo "🩺 Performing health check..."
                     sh '''
                         echo "Waiting for app to start..."
-                        sleep 10
-        
+                        sleep 20
                         echo "Checking health endpoint inside container..."
-                        docker exec podcast curl -f http://localhost:3000/health || exit 1
+                        docker exec podcast curl -f http://localhost:3000/health || (echo "Health check failed!" && docker logs podcast && exit 1)
                     '''
                 }
             }
