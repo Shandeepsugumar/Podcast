@@ -10,8 +10,8 @@ pipeline {
         DOCKER_HUB_REPO = 'shandeep04/podcast-app'
         IMAGE_TAG = "${BUILD_NUMBER}"
         CONTAINER_NAME = "podcast"
-        CONTAINER_PORT = "3000"   // internal port backend serves on
-        HOST_PORT = "4000"        // external port accessible in browser
+        CONTAINER_PORT = "3000"   // Internal backend port
+        HOST_PORT = "4000"        // External backend port
     }
 
     stages {
@@ -48,31 +48,33 @@ pipeline {
             }
         }
 
-       stage('Deploy Container Locally') {
-        steps {
-            script {
-                echo "⚡ Deploying container locally..."
-                sh """
-                    echo "🛑 Stopping and removing old container if exists..."
-                    docker stop ${CONTAINER_NAME} || true
-                    docker rm ${CONTAINER_NAME} || true
-    
-                    echo "🚀 Starting new fullstack container..."
-                    docker run -d --name ${CONTAINER_NAME} -p 80:80 -p ${HOST_PORT}:${CONTAINER_PORT} ${DOCKER_HUB_REPO}:${IMAGE_TAG}
-    
-                    echo "⏳ Waiting for app to start..."
-                    sleep 8
-    
-                    echo "🔍 Checking container status..."
-                    docker ps --filter "name=${CONTAINER_NAME}" --format "table {{.Names}}\t{{.Image}}\t{{.Ports}}\t{{.Status}}"
-    
-                    echo "🌐 Backend: http://localhost:${HOST_PORT}"
-                    echo "🌐 Frontend: http://localhost"
-                """
+        stage('Deploy Container Locally') {
+            steps {
+                script {
+                    echo "⚡ Deploying container locally..."
+                    sh """
+                        echo "🛑 Stopping and removing old container if exists..."
+                        docker stop ${CONTAINER_NAME} || true
+                        docker rm ${CONTAINER_NAME} || true
+
+                        echo "🚀 Starting new fullstack container..."
+                        docker run -d --name ${CONTAINER_NAME} \
+                            -p 80:${CONTAINER_PORT} \
+                            -p ${HOST_PORT}:${CONTAINER_PORT} \
+                            ${DOCKER_HUB_REPO}:${IMAGE_TAG}
+
+                        echo "⏳ Waiting for app to start..."
+                        sleep 8
+
+                        echo "🔍 Checking container status..."
+                        docker ps --filter "name=${CONTAINER_NAME}" --format "table {{.Names}}\t{{.Image}}\t{{.Ports}}\t{{.Status}}"
+
+                        echo "🌐 Frontend: http://localhost"
+                        echo "🌐 Backend:  http://localhost:${HOST_PORT}"
+                    """
+                }
             }
         }
-    }
-
 
         stage('Health Check') {
             steps {
