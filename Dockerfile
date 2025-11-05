@@ -18,27 +18,32 @@ RUN npm run build
 FROM node:20-alpine AS backend
 WORKDIR /app/backend
 
-# Copy backend dependencies
+# Copy backend dependencies and install
 COPY Backend/package*.json ./
 RUN npm ci --omit=dev
 
 # Copy backend source
 COPY Backend/ ./
 
-# Copy built frontend into backend's public directory
+# ✅ Copy built frontend into backend public folder
+# This allows the Node server to serve frontend files
 COPY --from=frontend-build /app/frontend/dist ./public
 
-# Environment setup
+# ==========================================================
+# Setup & Healthcheck
+# ==========================================================
 ENV NODE_ENV=production
 ENV PORT=3000
 EXPOSE 3000
 
-# Install curl for healthcheck
+# Install curl for health check
 RUN apk add --no-cache curl
 
-# ✅ Healthcheck — ensures backend is alive
+# Healthcheck to verify backend is running
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
   CMD curl -f http://localhost:${PORT}/health || exit 1
 
-# Start the backend (which now serves frontend too)
+# ==========================================================
+# Start the backend (serves both frontend & API)
+# ==========================================================
 CMD ["node", "server.js"]
