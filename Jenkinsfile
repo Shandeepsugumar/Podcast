@@ -73,9 +73,13 @@ pipeline {
             steps {
                 script {
                     echo "🩺 Performing health check..."
-                    sh """
-                        curl -f http://localhost/health || exit 1
-                    """
+                    sh '''
+                        echo "Waiting for app to start..."
+                        sleep 10
+        
+                        echo "Checking health endpoint inside container..."
+                        docker exec podcast curl -f http://localhost:3000/health || exit 1
+                    '''
                 }
             }
         }
