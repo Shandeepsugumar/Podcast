@@ -10,6 +10,8 @@ import request from 'request';
 import Parser from 'rss-parser';
 import multer from 'multer';
 import nodemailer from 'nodemailer';
+import path from 'path';  // ✅ Added for serving static files
+import { fileURLToPath } from 'url';
 
 // ====== Environment Setup ======
 const { MONGODB_URI, JWT_SECRET, EMAIL_USER, EMAIL_PASS, PORT = 3000 } = process.env;
@@ -233,9 +235,22 @@ app.get('/api/episodes', async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch or parse RSS feed', details: err.message });
   }
 });
+
 // ====== Health Check Route ======
 app.get('/health', (req, res) => {
   res.status(200).send('OK');
+});
+
+// ====== ✅ Serve Built Frontend ======
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const publicPath = path.join(__dirname, 'public');
+app.use(express.static(publicPath));
+
+// SPA fallback for React Router
+app.get('*', (req, res, next) => {
+  if (req.path.startsWith('/api') || req.path === '/health') return next();
+  res.sendFile(path.join(publicPath, 'index.html'));
 });
 
 // ====== Start Server ======
