@@ -10,8 +10,8 @@ pipeline {
         DOCKER_HUB_REPO = 'shandeep04/podcast-app'
         IMAGE_TAG = "${BUILD_NUMBER}"
         CONTAINER_NAME = "podcast"
-        CONTAINER_PORT = "3000"   // internal port your app listens on
-        HOST_PORT = "4000"        // external port you’ll access from browser/curl
+        CONTAINER_PORT = "3000"   // internal port backend serves on
+        HOST_PORT = "4000"        // external port accessible in browser
     }
 
     stages {
@@ -27,7 +27,10 @@ pipeline {
                 script {
                     echo "🐳 Building combined fullstack Docker image..."
                     sh """
-                        docker build -t ${DOCKER_HUB_REPO}:${IMAGE_TAG} -t ${DOCKER_HUB_REPO}:latest -f Dockerfile .
+                        docker build \
+                            -t ${DOCKER_HUB_REPO}:${IMAGE_TAG} \
+                            -t ${DOCKER_HUB_REPO}:latest \
+                            -f Dockerfile .
                     """
                 }
             }
@@ -53,18 +56,34 @@ pipeline {
                         echo "🛑 Stopping and removing old container if exists..."
                         docker stop ${CONTAINER_NAME} || true
                         docker rm ${CONTAINER_NAME} || true
-        
+
                         echo "🚀 Starting new fullstack container..."
-                        docker run -d --name ${CONTAINER_NAME} -p 80:80 -p ${HOST_PORT}:${CONTAINER_PORT} ${DOCKER_HUB_REPO}:${IMAGE_TAG}
-        
+                        docker run -d \
+                            --name ${CONTAINER_NAME} \
+                            -p 80:3000 \               # frontend (served by backend)
+                            -p ${HOST_PORT}:${CONTAINER_PORT} \  # API
+                            ${DOCKER_HUB_REPO}:${IMAGE_TAG}
+
                         echo "⏳ Waiting for app to start..."
-                        sleep 8
-        
+                        sleep 10
+
                         echo "🔍 Checking container status..."
                         docker ps --filter "name=${CONTAINER_NAME}" --format "table {{.Names}}\t{{.Image}}\t{{.Ports}}\t{{.Status}}"
-        
-                        echo "🌐 Backend: http://localhost:${HOST_PORT}"
-                        echo "🌐 Frontend: http://localhost"
+
+                        echo "🌐 Frontend:  http://localhost"
+                        echo "🌐 Backend:   http://localhost:${HOST_PORT}/health"
+                    """
+                }
+            }
+        }
+
+        stage('Health Check') {
+            steps {
+                script {
+                    echo "🩺 Performing health check..."
+                    sh """
+                        echo "Checking backend health endpoint..."
+                        curl -f http://localhost:${HOST_PORT}/health || exit 1
                     """
                 }
             }
