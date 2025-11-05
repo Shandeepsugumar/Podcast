@@ -254,7 +254,7 @@ app.get('*', (req, res, next) => {
 });
 
 app.get('/health', (req, res) => {
-  res.status(200).json({ status: 'ok', message: 'Server is healthy!' });
+  res.status(200).send('OK');
 });
 
 // ====== Start Server ======
