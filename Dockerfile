@@ -18,19 +18,18 @@ RUN npm run build
 FROM node:20-alpine AS backend
 WORKDIR /app/backend
 
-# Copy backend dependencies and install
+# Copy backend dependencies and install (only production deps)
 COPY Backend/package*.json ./
 RUN npm ci --omit=dev
 
-# Copy backend source
+# Copy backend source code
 COPY Backend/ ./
 
 # ✅ Copy built frontend into backend public folder
-# This allows the Node server to serve frontend files
 COPY --from=frontend-build /app/frontend/dist ./public
 
 # ==========================================================
-# Setup & Healthcheck
+# Environment, Health Check, and Start
 # ==========================================================
 ENV NODE_ENV=production
 ENV PORT=3000
