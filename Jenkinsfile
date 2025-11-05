@@ -48,7 +48,7 @@ pipeline {
             }
         }
 
-        stage('Deploy Container Locally') {
+       stage('Deploy Container Locally') {
             steps {
                 script {
                     echo "⚡ Deploying container locally..."
@@ -56,26 +56,26 @@ pipeline {
                         echo "🛑 Stopping and removing old container if exists..."
                         docker stop ${CONTAINER_NAME} || true
                         docker rm ${CONTAINER_NAME} || true
-
+        
                         echo "🚀 Starting new fullstack container..."
-                        docker run -d \
-                            --name ${CONTAINER_NAME} \
-                            -p 80:3000 \               # frontend (served by backend)
-                            -p ${HOST_PORT}:${CONTAINER_PORT} \  # API
+                        docker run -d --name ${CONTAINER_NAME} \
+                            -p 80:80 \                          # frontend (served by backend)
+                            -p ${HOST_PORT}:${CONTAINER_PORT} \ # backend
                             ${DOCKER_HUB_REPO}:${IMAGE_TAG}
-
+        
                         echo "⏳ Waiting for app to start..."
-                        sleep 10
-
+                        sleep 8
+        
                         echo "🔍 Checking container status..."
                         docker ps --filter "name=${CONTAINER_NAME}" --format "table {{.Names}}\t{{.Image}}\t{{.Ports}}\t{{.Status}}"
-
-                        echo "🌐 Frontend:  http://localhost"
-                        echo "🌐 Backend:   http://localhost:${HOST_PORT}/health"
+        
+                        echo "🌐 Backend: http://localhost:${HOST_PORT}"
+                        echo "🌐 Frontend: http://localhost"
                     """
                 }
             }
         }
+
 
         stage('Health Check') {
             steps {
